@@ -24,6 +24,7 @@ class HashTable:
     def __init__(self, capacity=MIN_CAPACITY):
         self.capacity = capacity
         self.storage = [None] * self.capacity
+        self.in_use = 0
 
     def get_num_slots(self):
         """
@@ -43,7 +44,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.in_use / self.capacity
 
     def fnv1(self, key):
         """
@@ -85,8 +86,19 @@ class HashTable:
 
         Implement this.
         """
+        i = self.hash_index(key)
 
-        self.storage[self.hash_index(key)] = value
+        # if there isnt any values stored
+        if not self.storage[i]:
+            # create new node at head
+            self.storage[i] = HashTableEntry(key, value)
+            self.in_use += 1
+        else:
+            # create new node, insert at head
+            new_entry = HashTableEntry(key, value)
+            new_entry.next = self.storage[i]
+            self.storage[i] = new_entry
+            self.in_use += 1
 
     def delete(self, key):
         """
@@ -96,9 +108,28 @@ class HashTable:
 
         Implement this.
         """
-        try:
-            self.storage[self.hash_index(key)] = None
-        except KeyError:
+        i = self.hash_index(key)
+        # check for no value
+        if not self.storage[i]:
+            return print(f'There is no value at {key} in storage')
+        else:
+            current = self.storage[i]
+            prev = None
+            # check if head is target
+            if self.storage[i].key == key:
+                self.storage[i] = current.next
+                self.in_use -= 1
+                return current.value
+            # else, travel through linked list
+            while current is not None:
+                if current.key == key:
+                    prev.next = current.next
+                    self.in_use -= 1
+                    return current.value
+
+                prev = current
+                current = current.next
+
             return print(f'There is no value at {key} in storage')
 
     def get(self, key):
@@ -109,9 +140,19 @@ class HashTable:
 
         Implement this.
         """
-        try:
-            return self.storage[self.hash_index(key)]
-        except KeyError:
+        i = self.hash_index(key)
+        # check for no value
+        if not self.storage[i]:
+            return None
+        else:
+            current = self.storage[i]
+            # else, travel through linked list
+            while current is not None:
+                if current.key == key:
+                    return current.value
+
+                current = current.next
+
             return None
 
     def resize(self, new_capacity):
