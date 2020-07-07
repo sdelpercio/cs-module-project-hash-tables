@@ -93,12 +93,20 @@ class HashTable:
             # create new node at head
             self.storage[i] = HashTableEntry(key, value)
             self.in_use += 1
+
+            # check load factor
+            if self.get_load_factor() >= 0.7:
+                self.resize(self.capacity * 2)
         else:
             # create new node, insert at head
             new_entry = HashTableEntry(key, value)
             new_entry.next = self.storage[i]
             self.storage[i] = new_entry
             self.in_use += 1
+
+            # check load factor
+            if self.get_load_factor() >= 0.7:
+                self.resize(self.capacity * 2)
 
     def delete(self, key):
         """
@@ -162,7 +170,24 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        self.capacity = new_capacity
+        old_storage = self.storage
+        self.storage = [None] * self.capacity
+        self.in_use = 0
+
+        for bucket in old_storage:
+            if bucket is None:
+                continue
+            else:
+                stack = []
+                current = bucket
+
+                while current is not None:
+                    stack.insert(0, current)
+                    current = current.next
+
+                for i in stack:
+                    self.put(i.key, i.value)
 
 
 if __name__ == "__main__":
