@@ -1,6 +1,17 @@
 def no_dups(s):
-    # Your code here
+    my_dict = {}
+    uniques = []
 
+    s = s.split()
+
+    for word in s:
+        if word in my_dict:
+            continue
+        else:
+            my_dict[word] = 1
+            uniques.append(word)
+
+    return ' '.join(uniques)
 
 
 if __name__ == "__main__":
