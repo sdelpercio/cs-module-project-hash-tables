@@ -1,8 +1,19 @@
-# Your code here
+cache = {}
 
 
 def expensive_seq(x, y, z):
-    # Your code here
+    
+    combo = (x, y, z)
+    if combo in cache:
+        return cache[combo]
+    
+    if x <= 0: 
+        cache[combo] = y + z
+    
+    if combo not in cache:
+        cache[combo] = expensive_seq(x-1,y+1,z) + expensive_seq(x-2,y+2,z*2) + expensive_seq(x-3,y+3,z*3)    
+    
+    return cache[combo]
 
 
 
