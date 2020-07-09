@@ -27,9 +27,14 @@ def blah_constructor():
         # if capital or quote, then capital
         if re.search("[A-Z]", first_word):
             blah_sentence = [*blah_sentence, first_word]
-            blah_sentence = [*blah_sentence,
-                             random.choice(blah_dict[first_word])]
-            break
+
+            # check following word
+            following = random.choice(blah_dict[first_word])
+            if re.search('[!?.]', following) or re.search("[A-Z]", following):
+                break
+            else:
+                blah_sentence = [*blah_sentence, following]
+                break
         else:
             continue
 
