@@ -25,7 +25,7 @@ def blah_constructor():
     while True:
         first_word = random.choice(list(blah_dict.keys()))
         # if capital or quote, then capital
-        if re.match("[A-Z]", first_word) or re.match('.["A-Z]', first_word):
+        if re.search("[A-Z]", first_word):
             blah_sentence = [*blah_sentence, first_word]
             blah_sentence = [*blah_sentence,
                              random.choice(blah_dict[first_word])]
@@ -38,16 +38,25 @@ def blah_constructor():
         next_word = random.choice(list(blah_dict.keys()))
 
         # if end word, stop
-        if re.search('[!?.].$', next_word):
+        if re.search('[!?.]', next_word):
             blah_sentence = [*blah_sentence, next_word]
             break
 
         # if starter word, continue
-        if re.match("[A-Z]", next_word) or re.match('.["A-Z]', next_word):
+        if re.search("[A-Z]", next_word):
             continue
 
         blah_sentence = [*blah_sentence, next_word]
-        blah_sentence = [*blah_sentence, random.choice(blah_dict[next_word])]
+
+        # check following random choice
+        following = random.choice(blah_dict[next_word])
+        if re.search('[!?.]', following):
+            blah_sentence = [*blah_sentence, following]
+            break
+        if re.search("[A-Z]", next_word):
+            continue
+        else:
+            blah_sentence = [*blah_sentence, following]
 
     return ' '.join(blah_sentence)
 
